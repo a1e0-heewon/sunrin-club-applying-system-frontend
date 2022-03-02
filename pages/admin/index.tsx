@@ -24,8 +24,10 @@ const Admin = () => {
     },
   });
 
+  console.log(data);
   if (loading) return <>로딩중입니다</>;
   if (error) return <>로딩중입니다</>;
+
   return (
     <div>
       <Header />

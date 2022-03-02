@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useGetFormByClubQuery } from "../../generated";
 import Link from "next/link";
@@ -11,7 +11,11 @@ const Index = ({ club, datas }: any) => {
   });
 
   const edges = datas?.getAnswerByClub.edges;
-  const formdata = data?.getFormByClub.question;
+  const formdata = Array();
+
+  if (data?.getFormByClub.__typename !== "InvalidFormError") {
+    const formdata = data?.getFormByClub.question;
+  }
 
   return (
     <Base>
@@ -30,7 +34,7 @@ const Index = ({ club, datas }: any) => {
               </Phone>
             </Title>
             <FormBase>
-              {formdata?.map((datas: any, index: any) => (
+              {formdata.map((datas: any, index: any) => (
                 <Question>
                   <QuestionTitle>{datas.message}</QuestionTitle>
                   <QuestionCotent>{data.node.answerList[index]}</QuestionCotent>
