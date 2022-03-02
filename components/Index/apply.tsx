@@ -8,7 +8,7 @@ const Main = ({ club }: any) => {
 
   return (
     <Base>
-      <Out club={NameClub[club]} color={ColorClub[club]}>
+      <Out club={NameClub[club].toLowerCase()} color={ColorClub[club]}>
         <Link href={`/club/${NameClub[club]}`}>
           <Over>
             <Apply>지원하기</Apply>
