@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useRef, CSSProperties } from "react";
 import styled from "styled-components";
 import Footer from "./Nav/Footer";
+import SubmitModal from "./SubmitModal";
 import { useUpsertFormMutation } from "../../generated";
 
 const Questions = (question_data: any) => {
   const [text, setText] = useState(question_data.question_data?.introduce);
   const [list, setList] = useState(
-    question_data.question_data.question?.map((test: any) => ({
-      message: test.message,
-      length: test.length,
-    }))
+    question_data.question_data.question !== undefined
+      ? question_data.question_data.question?.map((test: any) => ({
+          message: test.message,
+          length: test.length,
+        }))
+      : []
   );
+  const [modal, setModal] = useState(false);
+  const [check, setCheck] = useState(false);
 
   const [upsertFormMutation, { data, loading, error }] =
     useUpsertFormMutation();
@@ -23,17 +28,39 @@ const Questions = (question_data: any) => {
     setList(list);
   };
 
+  useEffect(() => {
+    if (check) {
+      upsertFormMutation({
+        variables: {
+          input: {
+            introduce: text,
+            question: list,
+          },
+        },
+      });
+      window.location.replace(window.location.href);
+    }
+  }, [check]);
+
   const onSubmit = (e: any) => {
     e.preventDefault();
-    console.log(list);
-    upsertFormMutation({
-      variables: {
-        input: {
-          introduce: text,
-          question: list,
-        },
-      },
-    });
+    openModal();
+  };
+
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    setModal(true);
+  };
+
+  const closeModal = () => {
+    document.body.style.overflow = "scroll";
+    setModal(false);
+    setCheck(false);
+  };
+
+  const submitCheck = () => {
+    setCheck(true);
+    setModal(false);
   };
 
   return (
@@ -48,6 +75,7 @@ const Questions = (question_data: any) => {
           <Footer />
         </Form>
       </FormBase>
+      {modal && <SubmitModal submitCheck={submitCheck} onClose={closeModal} />}
     </Base>
   );
 };

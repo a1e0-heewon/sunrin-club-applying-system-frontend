@@ -19,7 +19,7 @@ const Admin = () => {
   const { data, loading, error, refetch, fetchMore } = useGetAnswerByClubQuery({
     variables: {
       club: id,
-      limit: 5,
+      limit: 3,
     },
   });
 
@@ -27,12 +27,39 @@ const Admin = () => {
     fetchMore({
       variables: {
         club: id,
-        limit: 5,
+        limit: 3,
         cursor: data?.getAnswerByClub.pageInfo.endCursor,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
+        console.log(previousResult);
         console.log(fetchMoreResult);
-        return fetchMoreResult;
+        console.log(previousResult?.getAnswerByClub.pageInfo.endCursor);
+        console.log(fetchMoreResult?.getAnswerByClub.pageInfo.endCursor);
+        console.log(
+          Object.assign({}, fetchMoreResult, {
+            getAnswerByClub: {
+              edges: [
+                ...previousResult.getAnswerByClub.edges,
+                ...fetchMoreResult.getAnswerByClub.edges,
+              ],
+              pageInfo: fetchMoreResult.getAnswerByClub.pageInfo,
+              totalCount: fetchMoreResult.getAnswerByClub.totalCount,
+            },
+          })
+        );
+
+        if (!fetchMoreResult) return previousResult;
+        return Object.assign({}, fetchMoreResult, {
+          getAnswerByClub: {
+            edges: [
+              ...previousResult.getAnswerByClub.edges,
+              ...fetchMoreResult.getAnswerByClub.edges,
+            ],
+            pageInfo: fetchMoreResult.getAnswerByClub.pageInfo,
+            totalCount: fetchMoreResult.getAnswerByClub.totalCount,
+            __typename: fetchMoreResult.getAnswerByClub.__typename,
+          },
+        });
       },
     });
   };

@@ -16,7 +16,7 @@ const Header = () => {
           </Link>
         </Title>
         <Content>
-          <Link href={"/admin/" + club}>
+          <Link href={"/admin/question"}>
             <Click>QUESTION</Click>
           </Link>
           <Link href="../../logout">
