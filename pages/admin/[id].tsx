@@ -3,11 +3,13 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Cookies } from "react-cookie";
 import { get } from "lodash";
+import Link from "next/link";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import withApollo from "../../apollo/apollo";
 import { useGetFormByClubQuery } from "../../generated";
 import Questions from "../../components/Admin/question";
 import Header from "../../components/Admin/Nav/Header";
+import Loading from "../../components/loading";
 
 const Question = ({ query }: any) => {
   const router = useRouter();
@@ -17,12 +19,15 @@ const Question = ({ query }: any) => {
     if (!cookies.get("token") || !cookies.get("club")) router.push("../login");
   });
 
-  const id = get(query, "club");
+  const id = get(query, "id");
   const { data, loading, error } = useGetFormByClubQuery({
     variables: {
       club: id,
     },
   });
+
+  if (loading) return <Loading />;
+  if (error) return <Link href={"../../logout"} />;
 
   return (
     <div>

@@ -12,14 +12,14 @@ const Header = () => {
       <Base>
         <Title>
           <Link href={"/admin"}>
-            <Click>{club} ADMIN PAGE</Click>
+            <Click>ADMIN PAGE</Click>
           </Link>
         </Title>
         <Content>
-          <Link href={"/admin/question?club=" + club}>
+          <Link href={"/admin/" + club}>
             <Click>QUESTION</Click>
           </Link>
-          <Link href="/logout">
+          <Link href="../../logout">
             <Click>LOGOUT</Click>
           </Link>
         </Content>
@@ -64,6 +64,7 @@ const Click = styled.div`
   text-align: center;
   font-size: 20px;
   font-weight: 900;
+  cursor: pointer;
 `;
 
 export default Header;

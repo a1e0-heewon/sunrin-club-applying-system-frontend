@@ -5,6 +5,7 @@ import withApollo from "../../apollo/apollo";
 import { useGetFormByClubQuery } from "../../generated";
 import Index from "../../components/Club";
 import Error from "../../components/Club/Error";
+import Loading from "../../components/loading";
 
 const Club = ({ query }: any) => {
   const id = get(query, "id");
@@ -14,7 +15,7 @@ const Club = ({ query }: any) => {
     },
   });
 
-  if (loading) return <>로딩중입니다</>;
+  if (loading) return <Loading />;
   if (error || data?.getFormByClub.__typename == "InvalidFormError")
     return <Error />;
   return <Index club={id} datas={data} />;

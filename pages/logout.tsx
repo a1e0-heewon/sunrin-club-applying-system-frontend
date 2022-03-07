@@ -7,13 +7,13 @@ import { Cookies } from "react-cookie";
 const Logout: NextPage = () => {
   const router = useRouter();
   const cookies = new Cookies();
+
   useEffect(() => {
     cookies.remove("club");
     cookies.remove("token");
 
     router.push("login");
-  });
-
+  }, []);
   return <></>;
 };
 

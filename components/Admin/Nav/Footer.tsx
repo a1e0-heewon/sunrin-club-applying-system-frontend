@@ -44,23 +44,6 @@ const ButtonBase = styled.div`
   justify-content: space-between;
 `;
 
-const ButtonLine = styled.button`
-  width: 170px;
-  height: 50px;
-  background: #ffffff;
-  color: #91c788;
-  font-size: 16px;
-  font-weight: bolder;
-  border: 1px solid #91c788;
-  border-radius: 25px;
-
-  &:hover {
-    border: 1px solid #52734d;
-    color: #52734d;
-    cursor: pointer;
-  }
-`;
-
 const ButtonFull = styled.button`
   width: 170px;
   height: 50px;

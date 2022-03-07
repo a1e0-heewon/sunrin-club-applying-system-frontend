@@ -4,20 +4,14 @@ import styled from "styled-components";
 export const Questionsitem = ({ question, value }: any) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState(value);
+  const [textlength, setTextlength] = useState(0);
   const [textAreaHeight, setTextAreaHeight] = useState("auto");
   const [parentHeight, setParentHeight] = useState("auto");
-
-  const parentStyle: CSSProperties = {
-    minHeight: parentHeight,
-  };
-
-  const textAreaStyle: CSSProperties = {
-    height: textAreaHeight,
-  };
 
   useEffect(() => {
     setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
     setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`);
+    setTextlength(text?.length == undefined ? 0 : text?.length);
   }, [text]);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -28,25 +22,34 @@ export const Questionsitem = ({ question, value }: any) => {
 
   return (
     <Base>
-      <QuestionTitle>{question.message}</QuestionTitle>
-      <div
-        style={{
-          minHeight: parentHeight,
-        }}
-      >
-        <QuestionForm
-          placeholder="내용을 입력해주세요"
-          ref={textAreaRef}
+      <label>
+        <QuestionTitle>{question.message}</QuestionTitle>
+        <div
           style={{
-            height: textAreaHeight,
+            minHeight: parentHeight,
           }}
-          rows={1}
-          value={text}
-          onChange={onChangeHandler}
-          maxLength={question.length}
-          required
-        />
-      </div>
+        >
+          <QuestionForm
+            placeholder="내용을 입력해주세요"
+            ref={textAreaRef}
+            style={{
+              height: textAreaHeight,
+            }}
+            rows={1}
+            value={text}
+            onChange={onChangeHandler}
+            maxLength={question.length}
+            required
+          />
+        </div>
+      </label>
+      {textlength == 0 ? (
+        <div></div>
+      ) : (
+        <QuestionLength>
+          {textlength}/{question.length}
+        </QuestionLength>
+      )}
     </Base>
   );
 };
@@ -66,19 +69,21 @@ export const Infoitem = ({
   };
 
   return (
-    <InfoBase>
-      <InfoTitle>{info}</InfoTitle>
-      <InfoForm
-        id="info"
-        name={name}
-        placeholder={placeholder}
-        type={type}
-        maxLength={maxLength}
-        value={text}
-        onChange={onChangeHandler}
-        required
-      />
-    </InfoBase>
+    <label>
+      <InfoBase>
+        <InfoTitle>{info}</InfoTitle>
+        <InfoForm
+          id="info"
+          name={name}
+          placeholder={placeholder}
+          type={type}
+          maxLength={maxLength}
+          value={text}
+          onChange={onChangeHandler}
+          required
+        />
+      </InfoBase>
+    </label>
   );
 };
 
@@ -194,6 +199,13 @@ const QuestionForm = styled.textarea`
   resize: none;
   outline: none;
   font-family: "Noto Sans KR", sans-serif;
+`;
+
+const QuestionLength = styled.div`
+  width: 100%;
+  text-align: right;
+  font-size: 13px;
+  color: #8c8c8c;
 `;
 
 const InfoBase = styled.div`

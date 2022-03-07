@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const Error = () => {
+const Error = ({ error }: any) => {
   return (
     <ErrorBase>
       <Errors>
-        <ErrorMessage>폼이 존재하지 않습니다.</ErrorMessage>
+        <ErrorMessage>{error}</ErrorMessage>
       </Errors>
     </ErrorBase>
   );

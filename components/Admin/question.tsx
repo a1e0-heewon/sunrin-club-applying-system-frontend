@@ -6,16 +6,35 @@ import { useUpsertFormMutation } from "../../generated";
 const Questions = (question_data: any) => {
   const [text, setText] = useState(question_data.question_data?.introduce);
   const [list, setList] = useState(
-    question_data.question_data?.question.map((test: any) => ({
+    question_data.question_data.question?.map((test: any) => ({
       message: test.message,
       length: test.length,
     }))
   );
 
-  // setList((list: any) => question_data.question_data?.question.map());
+  const [upsertFormMutation, { data, loading, error }] =
+    useUpsertFormMutation();
 
-  console.log(text);
-  console.log(list);
+  const ChangeIntroduce = (data: any) => {
+    setText(data);
+  };
+
+  const ChangeQuestion = (list: any) => {
+    setList(list);
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(list);
+    upsertFormMutation({
+      variables: {
+        input: {
+          introduce: text,
+          question: list,
+        },
+      },
+    });
+  };
 
   return (
     <Base>
@@ -23,9 +42,9 @@ const Questions = (question_data: any) => {
         <Title>동아리 지원폼 수정하기</Title>
       </Introduce>
       <FormBase>
-        <Form>
-          <Introduceitem value={text} />
-          <QuestionList value={list} />
+        <Form onSubmit={onSubmit}>
+          <Introduceitem value={text} ChangeIntroduce={ChangeIntroduce} />
+          <Questionitem value={list} ChangeQuestion={ChangeQuestion} />
           <Footer />
         </Form>
       </FormBase>
@@ -33,7 +52,7 @@ const Questions = (question_data: any) => {
   );
 };
 
-const Introduceitem = ({ value }: any) => {
+const Introduceitem = ({ value, ChangeIntroduce }: any) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState(value);
   const [textAreaHeight, setTextAreaHeight] = useState("auto");
@@ -42,6 +61,7 @@ const Introduceitem = ({ value }: any) => {
   useEffect(() => {
     setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
     setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`);
+    ChangeIntroduce(text);
   }, [text]);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -52,13 +72,13 @@ const Introduceitem = ({ value }: any) => {
 
   return (
     <div>
-      <IntroduceTitle>동아리 소개 수정</IntroduceTitle>
+      <ContentTitle>동아리 소개 수정</ContentTitle>
       <div
         style={{
           minHeight: parentHeight,
         }}
       >
-        <IntroduceForm
+        <ContentTextarea
           placeholder="동아리 소개와 유의 사항 등을 적어주세요"
           ref={textAreaRef}
           style={{
@@ -74,20 +94,103 @@ const Introduceitem = ({ value }: any) => {
   );
 };
 
-const QuestionList = ({ value }: any) => {
+const Questionitem = ({ value, ChangeQuestion }: any) => {
+  const [input, setInput] = useState({ message: "", length: 0 });
+  const [list, setList] = useState<any[]>(value);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [textAreaHeight, setTextAreaHeight] = useState("auto");
+  const [parentHeight, setParentHeight] = useState("auto");
+
+  useEffect(() => {
+    setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
+    setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`);
+  }, [input.message]);
+
+  useEffect(() => {
+    ChangeQuestion(list);
+  }, [list]);
+
+  const onChangeMessage = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTextAreaHeight("auto");
+    setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
+    setInput({ message: event.target.value, length: input.length });
+  };
+
+  const onClickHandler = () => {
+    if (
+      input.message != "" &&
+      input.message.split("").reverse().join("").indexOf(")") == 0
+    ) {
+      setInput({
+        message: input.message,
+        length: Number(
+          input.message
+            .substring(
+              input.message.length -
+                input.message.split("").reverse().join("").indexOf("("),
+              input.message.length -
+                input.message.split("").reverse().join("").indexOf(")") -
+                1
+            )
+            .replace(/[^0-9]/g, "")
+        ),
+      });
+    } else {
+      if (input.message != "") alert("글자 수 제한이 없습니다.");
+    }
+  };
+
+  useEffect(() => {
+    if (input.message !== "") {
+      setList((list: any) => list.concat(input));
+      setInput({ message: "", length: 0 });
+    }
+  }, [input.length]);
+
+  const onRemove = (event: any) => {
+    setList(
+      list.filter((data) => data.message !== list[event.target.id].message)
+    );
+  };
+
   return (
     <div>
-      <IntroduceTitle>동아리 질문 수정</IntroduceTitle>
-      <div></div>
+      <ContentTitle>동아리 질문 수정</ContentTitle>
+      <AddBase
+        style={{
+          minHeight: parentHeight,
+        }}
+      >
+        <InputTextarea
+          placeholder="동아리 질문을 괄호 안에 길이 제한과 함께 적어주세요 예시 : (400자)"
+          ref={textAreaRef}
+          style={{
+            height: textAreaHeight,
+          }}
+          rows={1}
+          value={input.message}
+          onChange={onChangeMessage}
+        />
+        <AddButton type="button" onClick={onClickHandler}>
+          + 추가
+        </AddButton>
+      </AddBase>
+      <QuestionList list={list} onRemove={onRemove} />
     </div>
   );
 };
 
-const QuestionAdd = ({ value }: any) => {
+const QuestionList = ({ list, onRemove }: any) => {
   return (
     <div>
-      <IntroduceTitle>동아리 질문 수정</IntroduceTitle>
-      <div></div>
+      {list?.map((data: any, index: any) => (
+        <ListBase>
+          <ListText type="url" value={data.message} readOnly />
+          <Delete type="button" id={index} onClick={onRemove}>
+            &times;
+          </Delete>
+        </ListBase>
+      ))}
     </div>
   );
 };
@@ -120,7 +223,7 @@ const FormBase = styled.div`
 
 const Form = styled.form``;
 
-const IntroduceForm = styled.textarea`
+const ContentTextarea = styled.textarea`
   border: none;
   padding: 0;
   height: 34px;
@@ -140,37 +243,30 @@ const IntroduceForm = styled.textarea`
   font-family: "Noto Sans KR", sans-serif;
 `;
 
-const IntroduceTitle = styled.div`
-  padding: 20px 0 6px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #3b3d40;
-  border-bottom: 1px solid #bababa;
-`;
-
-const URLTitle = styled.div`
-  padding: 20px 0 6px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #3b3d40;
-  border-bottom: 1px solid #bababa;
-`;
-
-const URLForm = styled.input`
+const InputTextarea = styled.textarea`
   border: none;
+  padding: 0;
   width: 80%;
   font-size: 16px;
   color: rgb(59, 61, 64);
-  padding: 0;
   white-space: pre-wrap;
   word-break: break-all;
   word-wrap: break-word;
   caret-color: #000;
   overflow: hidden;
+  line-height: 22px;
   box-shadow: none !important;
   resize: none;
   outline: none;
   font-family: "Noto Sans KR", sans-serif;
+`;
+
+const ContentTitle = styled.div`
+  padding: 20px 0 6px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #3b3d40;
+  border-bottom: 1px solid #bababa;
 `;
 
 const AddBase = styled.div`
@@ -191,7 +287,7 @@ const AddButton = styled.button`
   color: #91c788;
 `;
 
-const URLBase = styled.div`
+const ListBase = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -199,7 +295,7 @@ const URLBase = styled.div`
   margin: 10px 20px;
 `;
 
-const URLText = styled.input`
+const ListText = styled.input`
   border: none;
   color: #3b3d40;
   font-size: 18px;

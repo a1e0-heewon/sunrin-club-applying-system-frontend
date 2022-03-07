@@ -1,37 +1,58 @@
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Cookies } from "react-cookie";
 import { get } from "lodash";
+import Link from "next/link";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import withApollo from "../../apollo/apollo";
 import { useGetAnswerByClubQuery } from "../../generated";
 import Index from "../../components/Admin";
 import Header from "../../components/Admin/Nav/Header";
+import Loading from "../../components/loading";
 
 const Admin = () => {
+  const [cursor, setCursor] = useState(null);
   const router = useRouter();
   const cookies = new Cookies();
   const id = cookies.get("club");
+  const { data, loading, error, refetch, fetchMore } = useGetAnswerByClubQuery({
+    variables: {
+      club: id,
+      limit: 5,
+    },
+  });
+
+  const readMore = () => {
+    fetchMore({
+      variables: {
+        club: id,
+        limit: 5,
+        cursor: data?.getAnswerByClub.pageInfo.endCursor,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        console.log(fetchMoreResult);
+        return fetchMoreResult;
+      },
+    });
+  };
 
   useEffect(() => {
     if (!cookies.get("token") || !cookies.get("club")) router.push("../login");
   });
 
-  const { data, loading, error } = useGetAnswerByClubQuery({
-    variables: {
-      club: id,
-    },
-  });
-
-  console.log(data);
-  if (loading) return <>로딩중입니다</>;
-  if (error) return <>로딩중입니다</>;
+  if (loading) return <Loading />;
+  if (error)
+    return (
+      <Link href={"../../logout"}>
+        <div></div>
+      </Link>
+    );
 
   return (
     <div>
       <Header />
-      <Index club={id} datas={data} />
+      <Index club={id} datas={data} readMore={readMore} />
     </div>
   );
 };

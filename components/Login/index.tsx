@@ -28,7 +28,7 @@ const Index = () => {
         sameSite: "none",
       });
 
-      router.push("admin/" + data?.login.role);
+      router.push("admin/");
     }
   }, [data, loading]);
 

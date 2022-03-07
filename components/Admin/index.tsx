@@ -1,48 +1,70 @@
 import React, { useState, useEffect } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import { useGetFormByClubQuery } from "../../generated";
-import Link from "next/link";
+import Error from "./Error";
 
-const Index = ({ club, datas }: any) => {
+const Index = ({ club, datas, readMore }: any) => {
+  const [select, SetSelect] = useState();
   const { data, loading, error } = useGetFormByClubQuery({
     variables: {
       club: club,
     },
   });
 
+  if (data?.getFormByClub.__typename === "InvalidFormError")
+    return <Error error="폼이 없습니다." />;
+  else if (datas?.getAnswerByClub.totalCount == 0)
+    return <Error error="답변이 존재하지 않습니다." />;
+
+  const OnSubmit = (event: any) => {
+    event.preventDefault();
+    console.log(event);
+  };
+
+  const OnClick = (event: any) => {
+    SetSelect(event.target.id === select ? -1 : event.target.id);
+  };
+
   const edges = datas?.getAnswerByClub.edges;
-  const formdata = Array();
-
-  if (data?.getFormByClub.__typename !== "InvalidFormError") {
-    const formdata = data?.getFormByClub.question;
-  }
-
+  var formdata = data?.getFormByClub.question;
   return (
     <Base>
-      <Message>dasdas</Message>
-      <Form>
-        {edges.map((data: any) => (
-          <label htmlFor={data.node.phoneNumber}>
-            <Title>
-              <Name>
-                <TitleContent>{data.node.studentId}</TitleContent>
-                <TitleContent>{data.node.name}</TitleContent>
-              </Name>
-              <Phone>
-                <PhoneCheckBox id={data.node.phoneNumber} type="checkbox" />
-                <PhoneTitle>{data.node.phoneNumber}</PhoneTitle>
-              </Phone>
-            </Title>
-            <FormBase>
-              {formdata.map((datas: any, index: any) => (
-                <Question>
-                  <QuestionTitle>{datas.message}</QuestionTitle>
-                  <QuestionCotent>{data.node.answerList[index]}</QuestionCotent>
-                </Question>
-              ))}
-            </FormBase>
-          </label>
-        ))}
+      <Form onSubmit={OnSubmit}>
+        <List>
+          <TotalCount>
+            총 지원자 : {datas?.getAnswerByClub.totalCount}명
+          </TotalCount>
+          <InfiniteScroll
+            dataLength={datas?.getAnswerByClub.totalCount}
+            next={readMore}
+            hasMore={true}
+            loader={<div></div>}
+          >
+            {edges.map((data: any, index: any) => (
+              <Content key={index}>
+                <ContentHeader>
+                  <input type="checkbox" />
+                  <Name>{data.node?.name}</Name>
+                </ContentHeader>
+                <div>
+                  dahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakg
+                  dahsjfhakg dahsjfhakg dahsjfhakg
+                  dahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakg
+                  dahsjfhakg dahsjfhakg dahsjfhakg
+                  dahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakg
+                  dahsjfhakg dahsjfhakg dahsjfhakg
+                  dahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakg
+                  dahsjfhakg dahsjfhakg dahsjfhakg
+                  dahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakg
+                  dahsjfhakg dahsjfhakg dahsjfhakg
+                  dahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakgdahsjfhakg
+                  dahsjfhakg dahsjfhakg dahsjfhakg dahsjfhakg
+                </div>
+              </Content>
+            ))}
+          </InfiniteScroll>
+        </List>
       </Form>
     </Base>
   );
@@ -52,77 +74,36 @@ const Base = styled.div`
   padding-bottom: 50px;
 `;
 
-const Message = styled.div`
-  width: 87.72%;
-  padding: 0;
-  max-width: 1060px;
-  margin: 80px auto 0;
-`;
-
 const Form = styled.form`
   width: 87.72%;
-  padding: 0;
+  padding-top: 100px;
   max-width: 1060px;
-  margin: 0 auto;
+  margin: 0 auto 0;
 `;
 
-const FormBase = styled.div`
-  padding-bottom: 30px;
-  background-color: rgb(0, 0, 0, 0.02);
+const List = styled.div``;
+
+const TotalCount = styled.div`
+  font-size: 20px;
+  font-weight: 800;
+  padding-bottom: 20px;
 `;
 
-const Title = styled.div`
+const Content = styled.label`
+  padding: 0 20px;
+`;
+
+const ContentHeader = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  border-bottom: 2px solid #bababa;
-  padding: 20px 0 6px;
+  align-items: center;
+  border-bottom: 1px solid #b0b0b0;
+  padding-bottom: 10px;
 `;
 
 const Name = styled.div`
-  display: flex;
   font-size: 20px;
-  font-weight: bolder;
-`;
-
-const Phone = styled.div`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const PhoneCheckBox = styled.input`
-  position: relative;
-  top: 1.5px;
-`;
-
-const PhoneTitle = styled.div`
-  padding: 3px 0 3px 10px;
-  border-radius: 5px;
-`;
-
-const TitleContent = styled.div`
-  margin-right: 5px;
-`;
-
-const Question = styled.div`
-  width: 95%;
-  max-width: 1000px;
-  margin: 0 auto;
-`;
-
-const QuestionTitle = styled.div`
-  padding: 10px 0 6px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #000000;
-  border-bottom: 1px solid #bababa;
-`;
-
-const QuestionCotent = styled.div`
-  font-size: 16px;
-  color: #000000;
+  font-weight: 700;
+  padding-left: 10px;
 `;
 
 export default Index;
