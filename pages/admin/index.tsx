@@ -6,7 +6,7 @@ import { get } from "lodash";
 import Link from "next/link";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import withApollo from "../../apollo/apollo";
-import { useGetAnswerByClubQuery } from "../../generated";
+import { useGetAnswerByClubQuery, GetAnswerByClubQuery } from "../../generated";
 import Index from "../../components/Admin";
 import Header from "../../components/Admin/Nav/Header";
 import Loading from "../../components/loading";
@@ -23,6 +23,11 @@ const Admin = () => {
     },
   });
 
+  useEffect(() => {
+    console.log(data);
+    console.log(data?.getAnswerByClub.pageInfo.endCursor);
+  });
+
   const readMore = () => {
     fetchMore({
       variables: {
@@ -31,35 +36,8 @@ const Admin = () => {
         cursor: data?.getAnswerByClub.pageInfo.endCursor,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        console.log(previousResult);
-        console.log(fetchMoreResult);
-        console.log(previousResult?.getAnswerByClub.pageInfo.endCursor);
-        console.log(fetchMoreResult?.getAnswerByClub.pageInfo.endCursor);
-        console.log(
-          Object.assign({}, fetchMoreResult, {
-            getAnswerByClub: {
-              edges: [
-                ...previousResult.getAnswerByClub.edges,
-                ...fetchMoreResult.getAnswerByClub.edges,
-              ],
-              pageInfo: fetchMoreResult.getAnswerByClub.pageInfo,
-              totalCount: fetchMoreResult.getAnswerByClub.totalCount,
-            },
-          })
-        );
-
         if (!fetchMoreResult) return previousResult;
-        return Object.assign({}, fetchMoreResult, {
-          getAnswerByClub: {
-            edges: [
-              ...previousResult.getAnswerByClub.edges,
-              ...fetchMoreResult.getAnswerByClub.edges,
-            ],
-            pageInfo: fetchMoreResult.getAnswerByClub.pageInfo,
-            totalCount: fetchMoreResult.getAnswerByClub.totalCount,
-            __typename: fetchMoreResult.getAnswerByClub.__typename,
-          },
-        });
+        return fetchMoreResult;
       },
     });
   };
