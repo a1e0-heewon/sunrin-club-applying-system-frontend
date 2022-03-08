@@ -5,6 +5,7 @@ import withApollo from "../../apollo/apollo";
 import { useGetFormByClubQuery } from "../../generated";
 import Index from "../../components/Club";
 import Error from "../../components/Club/Error";
+import Close from "../../components/Club/close";
 import Loading from "../../components/loading";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -41,7 +42,7 @@ const Club = ({ query }: any) => {
   });
 
   if (time !== "") {
-    if (!isOpen) router.push("close");
+    if (!isOpen) return <Close />;
     if (loading) return <Loading />;
     if (error || data?.getFormByClub.__typename == "InvalidFormError")
       return <Error />;

@@ -30,6 +30,11 @@ const ClubContent = styled.div`
   &:hover {
     filter: none;
   }
+
+  @media screen and (max-width: 767px) {
+    width: 2.5em;
+    height: 2.5em;
+  }
 `;
 
 const ClubText = styled.div`
@@ -38,6 +43,10 @@ const ClubText = styled.div`
   font-size: 25px;
   font-weight: bolder;
   color: #ffffff;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 `;
 
 const ClubContentClicked = styled.div`
@@ -50,6 +59,11 @@ const ClubContentClicked = styled.div`
   display: flex;
   align-items: center;
   padding-bottom: 3px;
+
+  @media screen and (max-width: 767px) {
+    width: 2.5em;
+    height: 2.5em;
+  }
 `;
 
 const ClubTextClicked = styled.div`
@@ -58,6 +72,10 @@ const ClubTextClicked = styled.div`
   font-size: 25px;
   font-weight: bolder;
   color: #ffffff;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 `;
 
 export default Club;

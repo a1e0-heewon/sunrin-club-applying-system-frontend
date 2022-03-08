@@ -83,6 +83,19 @@ const Message = styled.div`
   }
   animation: typeMsg 7s steps(40) 1s 1 normal both,
     curserAnim 500ms steps(40) infinite normal;
+
+  @media screen and (max-width: 767px) {
+    font-size: 25px;
+    width: 15em;
+    @keyframes typeMsg {
+      0% {
+        width: 0em;
+      }
+      100% {
+        width: 15em;
+      }
+    }
+  }
 `;
 
 export default Close;
