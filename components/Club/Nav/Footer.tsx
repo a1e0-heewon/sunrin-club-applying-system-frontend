@@ -7,7 +7,7 @@ const Footer = () => {
         <div></div>
         <ButtonBase>
           <ButtonFull type="submit">
-            <span>질문 저장</span>
+            <span>지원하기</span>
           </ButtonFull>
         </ButtonBase>
       </Frame>
