@@ -7,7 +7,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -474,7 +474,7 @@ export type GetAnswerByClubQueryVariables = Exact<{
 }>;
 
 
-export type GetAnswerByClubQuery = { __typename?: 'Query', getAnswerByClub: { __typename?: 'AnswerConnection', totalCount: any, edges: Array<{ __typename?: 'AnswerEdge', cursor: any, node: { __typename?: 'Answer', studentId: any, name: any, club: Club, answerList: Array<string | null | undefined>, portfolioURL?: any | null | undefined, otherURLs: Array<any | null | undefined>, answerId: any, date: any, phoneNumber: any } }>, pageInfo: { __typename?: 'CursorPageInfo', hasNextPage: boolean, startCursor?: any | null | undefined, endCursor?: any | null | undefined } } };
+export type GetAnswerByClubQuery = { __typename?: 'Query', getAnswerByClub: { __typename?: 'AnswerConnection', totalCount: any, edges: Array<{ __typename?: 'AnswerEdge', cursor: any, node: { __typename?: 'Answer', studentId: any, name: any, club: Club, answerList: Array<string | null>, portfolioURL?: any | null, otherURLs: Array<any | null>, answerId: any, date: any, phoneNumber: any } }>, pageInfo: { __typename?: 'CursorPageInfo', hasNextPage: boolean, startCursor?: any | null, endCursor?: any | null } } };
 
 export type UpsertFormMutationVariables = Exact<{
   input: UpsertFormInput;
@@ -502,14 +502,12 @@ export type CreateAnswerMutationVariables = Exact<{
 }>;
 
 
-export type CreateAnswerMutation = { __typename?: 'Mutation', createAnswer: { __typename?: 'Answer', studentId: any, name: any, club: Club, answerList: Array<string | null | undefined>, portfolioURL?: any | null | undefined, otherURLs: Array<any | null | undefined>, answerId: any, date: any, phoneNumber: any } | { __typename?: 'CreateAnswerInvalidInputError', message: string, path: string, suggestion: string } | { __typename?: 'InvalidFormError', message: string, path: string, suggestion: string } | { __typename?: 'RateLimitError', message: string, path: string, suggestion: string, afterTry: any } };
+export type CreateAnswerMutation = { __typename?: 'Mutation', createAnswer: { __typename?: 'Answer', studentId: any, name: any, club: Club, answerList: Array<string | null>, portfolioURL?: any | null, otherURLs: Array<any | null>, answerId: any, date: any, phoneNumber: any } | { __typename?: 'CreateAnswerInvalidInputError', message: string, path: string, suggestion: string } | { __typename?: 'InvalidFormError', message: string, path: string, suggestion: string } | { __typename?: 'RateLimitError', message: string, path: string, suggestion: string, afterTry: any } };
 
-export type HealthCheckMutationVariables = Exact<{
-  input?: InputMaybe<HealthCheckInput>;
-}>;
+export type HealthLiveQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HealthCheckMutation = { __typename?: 'Mutation', healthCheck: string };
+export type HealthLiveQuery = { __typename?: 'Query', healthLive: any };
 
 
 export const LoginDocument = gql`
@@ -803,34 +801,35 @@ export function useCreateAnswerMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateAnswerMutationHookResult = ReturnType<typeof useCreateAnswerMutation>;
 export type CreateAnswerMutationResult = Apollo.MutationResult<CreateAnswerMutation>;
 export type CreateAnswerMutationOptions = Apollo.BaseMutationOptions<CreateAnswerMutation, CreateAnswerMutationVariables>;
-export const HealthCheckDocument = gql`
-    mutation healthCheck($input: HealthCheckInput) {
-  healthCheck(input: $input)
+export const HealthLiveDocument = gql`
+    query healthLive {
+  healthLive
 }
     `;
-export type HealthCheckMutationFn = Apollo.MutationFunction<HealthCheckMutation, HealthCheckMutationVariables>;
 
 /**
- * __useHealthCheckMutation__
+ * __useHealthLiveQuery__
  *
- * To run a mutation, you first call `useHealthCheckMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useHealthCheckMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useHealthLiveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHealthLiveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [healthCheckMutation, { data, loading, error }] = useHealthCheckMutation({
+ * const { data, loading, error } = useHealthLiveQuery({
  *   variables: {
- *      input: // value for 'input'
  *   },
  * });
  */
-export function useHealthCheckMutation(baseOptions?: Apollo.MutationHookOptions<HealthCheckMutation, HealthCheckMutationVariables>) {
+export function useHealthLiveQuery(baseOptions?: Apollo.QueryHookOptions<HealthLiveQuery, HealthLiveQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<HealthCheckMutation, HealthCheckMutationVariables>(HealthCheckDocument, options);
+        return Apollo.useQuery<HealthLiveQuery, HealthLiveQueryVariables>(HealthLiveDocument, options);
       }
-export type HealthCheckMutationHookResult = ReturnType<typeof useHealthCheckMutation>;
-export type HealthCheckMutationResult = Apollo.MutationResult<HealthCheckMutation>;
-export type HealthCheckMutationOptions = Apollo.BaseMutationOptions<HealthCheckMutation, HealthCheckMutationVariables>;
+export function useHealthLiveLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HealthLiveQuery, HealthLiveQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HealthLiveQuery, HealthLiveQueryVariables>(HealthLiveDocument, options);
+        }
+export type HealthLiveQueryHookResult = ReturnType<typeof useHealthLiveQuery>;
+export type HealthLiveLazyQueryHookResult = ReturnType<typeof useHealthLiveLazyQuery>;
+export type HealthLiveQueryResult = Apollo.QueryResult<HealthLiveQuery, HealthLiveQueryVariables>;

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import Link from "next/link";
 
 const GoogleFormInfo = () => {
   return (
     <Base>
-      <Title>공지사항</Title>
+      <Title>정보보호과 동아리 지원</Title>
       <Main>
         <Subheading>
           동아리 지원 기간 : 2022.03.09.(수) 00:00 ~ 03.15.(화) 23:59
@@ -39,6 +40,15 @@ const GoogleFormInfo = () => {
           </Li>
           <Li>자신의 1, 2, 3 지망은 면접 시 절대 발설 금지</Li>
         </Ul>
+        <ButtonBase>
+          <Apply>
+            <Link href="https://url.kr/5gltxo">
+              <Button type="button">
+                <span>1, 2, 3 지망 선택</span>
+              </Button>
+            </Link>
+          </Apply>
+        </ButtonBase>
       </Main>
     </Base>
   );
@@ -90,6 +100,46 @@ const Li = styled.li`
     width: 5px;
     height: 1.5px;
     background: #262626;
+  }
+`;
+
+const ButtonBase = styled.div`
+  display: none;
+
+  @media screen and (max-width: 767px) {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+const Apply = styled.div`
+  display: none;
+
+  @media screen and (max-width: 767px) {
+    display: block;
+  }
+`;
+
+const Button = styled.button`
+  width: 200px;
+  height: 50px;
+  background-color: #9700ff;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bolder;
+  border: none;
+  border-radius: 10px;
+
+  &:hover {
+    background: #9700ff;
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 140px;
+    height: 35px;
+    font-size: 12px;
   }
 `;
 

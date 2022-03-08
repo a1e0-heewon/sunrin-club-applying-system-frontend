@@ -2,7 +2,7 @@ import Head from "next/head";
 import { get } from "lodash";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import withApollo from "../../apollo/apollo";
-import { useGetFormByClubQuery } from "../../generated";
+import { useGetFormByClubQuery, useHealthLiveQuery } from "../../generated";
 import Index from "../../components/Club";
 import Error from "../../components/Club/Error";
 import Close from "../../components/Club/close";
@@ -18,20 +18,21 @@ const Club = ({ query }: any) => {
       club: id,
     },
   });
+  const {
+    data: timedata,
+    loading: timeloading,
+    error: timeerror,
+  } = useHealthLiveQuery({
+    variables: {},
+  });
   const [time, SetTime] = useState("");
   const [isOpen, SetisOpen] = useState(true);
 
   useEffect(() => {
-    fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (time) {
-        SetTime(JSON.stringify(time.datetime));
-      });
+    SetTime(timedata?.healthLive.healthLive);
 
     if (time !== "") {
-      const now = new Date(time.split(".")[0].substr(1));
+      const now = new Date(timedata?.healthLive.split(".")[0]);
       const openTime = new Date("2022-03-09T00:00:00");
       const closeTime = new Date("2022-03-15T23:59:59");
 
@@ -41,16 +42,12 @@ const Club = ({ query }: any) => {
     }
   });
 
-  if (time !== "") {
-    if (!isOpen) return <Close />;
-    if (loading) return <Loading />;
-    if (error || data?.getFormByClub.__typename == "InvalidFormError")
-      return <Error />;
+  if (!isOpen) return <Close />;
+  if (loading || timeloading) return <Loading />;
+  if (error || data?.getFormByClub.__typename == "InvalidFormError")
+    return <Error />;
 
-    return <Index club={id} datas={data} />;
-  }
-
-  return <Loading />;
+  return <Index club={id} datas={data} />;
 };
 
 export default withApollo(Club, { getDataFromTree });

@@ -56,14 +56,3 @@ export const createAnswer = gql`
     }
   }
 `;
-
-// {
-//   "input": {
-//     "studentId": 10311,
-//     "name": "서희원",
-//     "club": "UNIFOX",
-//     "phoneNumber": "01043004199",
-//     "answerList": ["ㅁㅇㅁㄴㅇㅁㄴ", "ㄴㄴㄴㄴㄴㄴ"],
-//     "otherURLs": []
-//   }
-// }
