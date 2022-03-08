@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useLoginMutation } from "../../generated";
+import Loading from "../loading";
 import { Cookies } from "react-cookie";
 
 const Index = () => {
@@ -30,7 +31,7 @@ const Index = () => {
 
       router.push("admin/");
     }
-  }, [data, loading]);
+  }, [data]);
 
   const handleClick = () => {
     loginMutation({
@@ -41,6 +42,7 @@ const Index = () => {
         },
       },
     });
+
     setId("");
     setPassword("");
   };
@@ -50,6 +52,8 @@ const Index = () => {
       handleClick();
     }
   };
+
+  if (loading) return <Loading />;
 
   return (
     <Base>
@@ -72,7 +76,7 @@ const Index = () => {
           required
         />
         {error || data?.login.__typename == "InvalidAccountError" ? (
-          <Error>아이디 또는 비밀번호를 잘못 입력했습니다.</Error>
+          <Error>아이디 또는 비밀번호가 틀렸습니다.</Error>
         ) : (
           ""
         )}

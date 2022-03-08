@@ -60,8 +60,6 @@ const Mainframe = styled.div`
   z-index: 999;
 `;
 
-const Club = styled.div`
-  margin-right: 40px;
-`;
+const Club = styled.div``;
 
 export default Header;

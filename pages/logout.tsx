@@ -12,8 +12,10 @@ const Logout: NextPage = () => {
     cookies.remove("club");
     cookies.remove("token");
 
-    router.push("login");
+    if (cookies.get("club") === undefined && cookies.get("token") === undefined)
+      router.push("login");
   }, []);
+
   return <></>;
 };
 
