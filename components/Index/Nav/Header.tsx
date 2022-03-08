@@ -10,6 +10,13 @@ type ClubProps = {
 const Header = ({ click, club }: ClubProps) => {
   return (
     <Mainframe>
+      <Club onClick={(e: any) => click(0)}>
+        <ClubContent
+          isClicked={club == 0}
+          clubName="H"
+          color={{ background: "rgb(151, 0, 255, 0.7)" }}
+        />
+      </Club>
       <Club onClick={(e: any) => click(1)}>
         <ClubContent
           isClicked={club == 1}

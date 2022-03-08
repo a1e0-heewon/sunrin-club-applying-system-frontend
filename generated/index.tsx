@@ -476,6 +476,15 @@ export type GetAnswerByClubQueryVariables = Exact<{
 
 export type GetAnswerByClubQuery = { __typename?: 'Query', getAnswerByClub: { __typename?: 'AnswerConnection', totalCount: any, edges: Array<{ __typename?: 'AnswerEdge', cursor: any, node: { __typename?: 'Answer', studentId: any, name: any, club: Club, answerList: Array<string | null>, portfolioURL?: any | null, otherURLs: Array<any | null>, answerId: any, date: any, phoneNumber: any } }>, pageInfo: { __typename?: 'CursorPageInfo', hasNextPage: boolean, startCursor?: any | null, endCursor?: any | null } } };
 
+export type GetAnswerByStudentIdQueryVariables = Exact<{
+  studentId: Scalars['StudentID'];
+  limit?: InputMaybe<Scalars['UnsignedInt']>;
+  cursor?: InputMaybe<Scalars['ObjectID']>;
+}>;
+
+
+export type GetAnswerByStudentIdQuery = { __typename?: 'Query', getAnswerByStudentId: { __typename?: 'AnswerConnection', totalCount: any, edges: Array<{ __typename?: 'AnswerEdge', cursor: any, node: { __typename?: 'Answer', studentId: any, name: any, club: Club, answerList: Array<string | null>, portfolioURL?: any | null, otherURLs: Array<any | null>, answerId: any, date: any, phoneNumber: any } }>, pageInfo: { __typename?: 'CursorPageInfo', hasNextPage: boolean, startCursor?: any | null, endCursor?: any | null } } };
+
 export type UpsertFormMutationVariables = Exact<{
   input: UpsertFormInput;
 }>;
@@ -607,6 +616,62 @@ export function useGetAnswerByClubLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetAnswerByClubQueryHookResult = ReturnType<typeof useGetAnswerByClubQuery>;
 export type GetAnswerByClubLazyQueryHookResult = ReturnType<typeof useGetAnswerByClubLazyQuery>;
 export type GetAnswerByClubQueryResult = Apollo.QueryResult<GetAnswerByClubQuery, GetAnswerByClubQueryVariables>;
+export const GetAnswerByStudentIdDocument = gql`
+    query getAnswerByStudentId($studentId: StudentID!, $limit: UnsignedInt, $cursor: ObjectID) {
+  getAnswerByStudentId(studentId: $studentId, limit: $limit, cursor: $cursor) {
+    totalCount
+    edges {
+      node {
+        studentId
+        name
+        club
+        answerList
+        portfolioURL
+        otherURLs
+        answerId
+        date
+        phoneNumber
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      startCursor
+      endCursor
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAnswerByStudentIdQuery__
+ *
+ * To run a query within a React component, call `useGetAnswerByStudentIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAnswerByStudentIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAnswerByStudentIdQuery({
+ *   variables: {
+ *      studentId: // value for 'studentId'
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetAnswerByStudentIdQuery(baseOptions: Apollo.QueryHookOptions<GetAnswerByStudentIdQuery, GetAnswerByStudentIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAnswerByStudentIdQuery, GetAnswerByStudentIdQueryVariables>(GetAnswerByStudentIdDocument, options);
+      }
+export function useGetAnswerByStudentIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAnswerByStudentIdQuery, GetAnswerByStudentIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAnswerByStudentIdQuery, GetAnswerByStudentIdQueryVariables>(GetAnswerByStudentIdDocument, options);
+        }
+export type GetAnswerByStudentIdQueryHookResult = ReturnType<typeof useGetAnswerByStudentIdQuery>;
+export type GetAnswerByStudentIdLazyQueryHookResult = ReturnType<typeof useGetAnswerByStudentIdLazyQuery>;
+export type GetAnswerByStudentIdQueryResult = Apollo.QueryResult<GetAnswerByStudentIdQuery, GetAnswerByStudentIdQueryVariables>;
 export const UpsertFormDocument = gql`
     mutation upsertForm($input: UpsertFormInput!) {
   upsertForm(input: $input) {

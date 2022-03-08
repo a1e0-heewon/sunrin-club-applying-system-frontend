@@ -1,91 +1,49 @@
 import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
-import { useGetFormByClubQuery } from "../../generated";
+import { useGetFormByClubQuery, useSendMessageMutation } from "../../generated";
 import Error from "./Error";
 
-const Index = ({ club, datas, readMore }: any) => {
-  const [select, SetSelect] = useState();
+const Index = ({ club, dataClub, readMoreClub }: any) => {
   const { data, loading, error } = useGetFormByClubQuery({
     variables: {
       club: club,
     },
   });
 
+  const [
+    sendMessageMutation,
+    { data: dataMessage, loading: loadingMessage, error: errorMessage },
+  ] = useSendMessageMutation({});
+
   if (data?.getFormByClub.__typename === "InvalidFormError")
     return <Error error="폼이 없습니다." />;
-  else if (datas?.getAnswerByClub.totalCount == 0)
+  else if (dataClub?.getAnswerByClub.totalCount == 0)
     return <Error error="답변이 존재하지 않습니다." />;
 
-  const OnSubmit = (event: any) => {
-    event.preventDefault();
-  };
+  const formdata = data?.getFormByClub.question;
+  const edgesClub = dataClub?.getAnswerByClub.edges;
 
-  const OnClick = (event: any) => {
-    SetSelect(event.target.id === select ? -1 : event.target.id);
-  };
-
-  const edges = datas?.getAnswerByClub.edges;
-  var formdata = data?.getFormByClub.question;
-
-  console.log(edges);
-  console.log(formdata);
   return (
     <Base>
-      <Form onSubmit={OnSubmit}>
+      <Form>
         <List>
           <TotalCount>
-            총 지원자 : {datas?.getAnswerByClub.totalCount}명
+            총 지원자 : {dataClub?.getAnswerByClub.totalCount}명
           </TotalCount>
           <InfiniteScroll
-            dataLength={datas?.getAnswerByClub.edges.length}
-            next={readMore}
+            dataLength={edgesClub.length}
+            next={readMoreClub}
             hasMore={true}
             loader={<div></div>}
           >
-            {edges.map((data: any, index: any) => (
-              <Content key={index}>
-                <ContentHeader>
-                  <input type="checkbox" />
-                  <Name>{data.node?.name}</Name>
-                </ContentHeader>
-                <ContentBody>
-                  <Info>
-                    <InfoItem>
-                      <InfoQuestionItem>이름</InfoQuestionItem>
-                      <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
-                    </InfoItem>
-                    <InfoItem>
-                      <InfoQuestionItem>이름</InfoQuestionItem>
-                      <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
-                    </InfoItem>
-                    <InfoItem>
-                      <InfoQuestionItem>이름</InfoQuestionItem>
-                      <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
-                    </InfoItem>
-                  </Info>
-                  {formdata?.map((formdatas: any, index_: any) => (
-                    <Question>
-                      <QuestionItem>{formdatas.message}</QuestionItem>
-                      <AnswerItem>{data.node.answerList[index_]}</AnswerItem>
-                    </Question>
-                  ))}
-                  <Info>
-                    <InfoItem>
-                      <InfoQuestionItem>이름</InfoQuestionItem>
-                      <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
-                    </InfoItem>
-                    <InfoItem>
-                      <InfoQuestionItem>이름</InfoQuestionItem>
-                      <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
-                    </InfoItem>
-                    <InfoItem>
-                      <InfoQuestionItem>이름</InfoQuestionItem>
-                      <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
-                    </InfoItem>
-                  </Info>
-                </ContentBody>
-              </Content>
+            {edgesClub.map((data: any, index: any) => (
+              <ContentItem
+                key={index}
+                index={index}
+                data={data}
+                formdata={formdata}
+              />
             ))}
           </InfiniteScroll>
         </List>
@@ -94,8 +52,54 @@ const Index = ({ club, datas, readMore }: any) => {
   );
 };
 
+const ContentItem = ({ index, data, formdata }: any) => {
+  return (
+    <Content key={index}>
+      <ContentHeader>
+        <Name>{data.node?.name + " " + data.node.studentId}</Name>
+      </ContentHeader>
+      <ContentBody>
+        <Info>
+          <InfoItem>
+            <InfoQuestionItem>이름</InfoQuestionItem>
+            <InfoAnswerItem>{data.node.name}</InfoAnswerItem>
+          </InfoItem>
+          <InfoItem>
+            <InfoQuestionItem>학번</InfoQuestionItem>
+            <InfoAnswerItem>{data.node.studentId}</InfoAnswerItem>
+          </InfoItem>
+          <InfoItem>
+            <InfoQuestionItem>전화번호</InfoQuestionItem>
+            <InfoAnswerItem>{data.node.phoneNumber}</InfoAnswerItem>
+          </InfoItem>
+        </Info>
+        {formdata?.map((formdatas: any, index_: any) => (
+          <Question key={index_}>
+            <QuestionItem>{formdatas.message}</QuestionItem>
+            <AnswerItem>{data.node.answerList[index_]}</AnswerItem>
+          </Question>
+        ))}
+        <URL>
+          <Portfolio>
+            <URLTitle>포트폴리오</URLTitle>
+            <PortfolioURL>{data.node.portfolioURL}</PortfolioURL>
+          </Portfolio>
+          <Question>
+            <URLTitle>추가 링크들</URLTitle>
+            <Other>
+              {data.node.otherURLs?.map((urls: any, index_: any) => (
+                <OtherURL key={index_}>{urls}</OtherURL>
+              ))}
+            </Other>
+          </Question>
+        </URL>
+      </ContentBody>
+    </Content>
+  );
+};
+
 const Base = styled.div`
-  padding-bottom: 50px;
+  padding-bottom: 130px;
 `;
 
 const Form = styled.form`
@@ -135,12 +139,75 @@ const ContentBody = styled.div`
 `;
 
 const Info = styled.div``;
-const InfoItem = styled.div``;
-const InfoQuestionItem = styled.div``;
-const InfoAnswerItem = styled.div``;
+const InfoItem = styled.div`
+  display: flex;
+  padding: 6px 0;
+`;
+const InfoQuestionItem = styled.div`
+  width: 66px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #3b3d40;
+  border-right: 2px solid #3b3d40;
+  text-align: right;
+  padding: 0 5px 0 0;
+`;
+const InfoAnswerItem = styled.div`
+  font-size: 16px;
+  color: rgb(59, 61, 64);
+  padding: 0;
+  margin: 0px 10px;
+`;
 
 const Question = styled.div``;
-const QuestionItem = styled.div``;
-const AnswerItem = styled.div``;
+const QuestionItem = styled.div`
+  padding: 20px 0 6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #3b3d40;
+  border-bottom: 1px solid #bababa;
+`;
+const AnswerItem = styled.div`
+  padding: 0;
+  width: 100%;
+  font-size: 16px;
+  color: rgb(59, 61, 64);
+  margin: 25px 0px 3px;
+  font-family: "Noto Sans KR", sans-serif;
+`;
+
+const URL = styled.div``;
+const Portfolio = styled.div``;
+const URLTitle = styled.div`
+  padding: 20px 0 6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #3b3d40;
+  border-bottom: 1px solid #bababa;
+`;
+
+const PortfolioURL = styled.div`
+  padding: 0;
+  width: 100%;
+  font-size: 16px;
+  color: rgb(59, 61, 64);
+  margin: 25px 0px 3px;
+  font-family: "Noto Sans KR", sans-serif;
+`;
+
+const Other = styled.div`
+  padding: 0;
+  width: 100%;
+  margin: 20px 0 0;
+`;
+
+const OtherURL = styled.div`
+  padding: 0;
+  width: 100%;
+  font-size: 16px;
+  color: rgb(59, 61, 64);
+  margin: 5px 0px;
+  font-family: "Noto Sans KR", sans-serif;
+`;
 
 export default Index;

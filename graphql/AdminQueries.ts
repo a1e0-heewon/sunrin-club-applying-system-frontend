@@ -43,6 +43,41 @@ export const GetAnswerByClub = gql`
   }
 `;
 
+export const GetAnswerByStudentId = gql`
+  query getAnswerByStudentId(
+    $studentId: StudentID!
+    $limit: UnsignedInt
+    $cursor: ObjectID
+  ) {
+    getAnswerByStudentId(
+      studentId: $studentId
+      limit: $limit
+      cursor: $cursor
+    ) {
+      totalCount
+      edges {
+        node {
+          studentId
+          name
+          club
+          answerList
+          portfolioURL
+          otherURLs
+          answerId
+          date
+          phoneNumber
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+`;
+
 export const upsertForm = gql`
   mutation upsertForm($input: UpsertFormInput!) {
     upsertForm(input: $input) {

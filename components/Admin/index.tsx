@@ -6,8 +6,7 @@ import SubmitModal from "./sendMessage";
 import Error from "./Error";
 import Footer from "./Nav/Footers";
 
-const Index = ({ club, datas, readMore }: any) => {
-  const [select, SetSelect] = useState();
+const Index = ({ club, dataClub, readMoreClub }: any) => {
   const [modal, setModal] = useState(false);
   const [check, setCheck] = useState(false);
   const [message, setMessage] = useState("");
@@ -33,15 +32,11 @@ const Index = ({ club, datas, readMore }: any) => {
 
   if (data?.getFormByClub.__typename === "InvalidFormError")
     return <Error error="폼이 없습니다." />;
-  else if (datas?.getAnswerByClub.totalCount == 0)
+  else if (dataClub?.getAnswerByClub.totalCount == 0)
     return <Error error="답변이 존재하지 않습니다." />;
 
-  const OnClick = (event: any) => {
-    SetSelect(event.target.id === select ? -1 : event.target.id);
-  };
-
-  const edges = datas?.getAnswerByClub.edges;
-  var formdata = data?.getFormByClub.question;
+  const formdata = data?.getFormByClub.question;
+  const edgesClub = dataClub?.getAnswerByClub.edges;
 
   const ChangeMessage = (message: any) => {
     setMessage(message);
@@ -87,16 +82,15 @@ const Index = ({ club, datas, readMore }: any) => {
       <Form onSubmit={onSubmit}>
         <List>
           <TotalCount>
-            총 지원자 : {datas?.getAnswerByClub.totalCount}명
+            총 지원자 : {dataClub?.getAnswerByClub.totalCount}명
           </TotalCount>
           <InfiniteScroll
-            dataLength={datas?.getAnswerByClub.edges.length}
-            next={readMore}
+            dataLength={edgesClub.length}
+            next={readMoreClub}
             hasMore={true}
             loader={<div></div>}
           >
-            <div></div>
-            {edges.map((data: any, index: any) => (
+            {edgesClub.map((data: any, index: any) => (
               <ContentItem
                 key={index}
                 index={index}
@@ -128,7 +122,7 @@ const ContentItem = ({ index, data, formdata, checkControl }: any) => {
       <ContentHeader>
         <input
           type="checkbox"
-          id={data.node.phoneNumber}
+          id={index + " " + data.node.phoneNumber}
           checked={checked}
           onChange={(e) => {
             setChecked(!checked);

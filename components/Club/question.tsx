@@ -38,7 +38,8 @@ export const Questionsitem = ({ question, value }: any) => {
             ? question.message.substring(
                 0,
                 question.message.length -
-                  question.message.split("").reverse().join("").indexOf("(")
+                  question.message.split("").reverse().join("").indexOf("(") -
+                  1
               )
             : question.message}
         </QuestionTitle>
