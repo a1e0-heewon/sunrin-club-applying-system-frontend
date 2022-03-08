@@ -36,6 +36,8 @@ const Club = ({ query }: any) => {
       const openTime = new Date("2022-03-09T00:00:00");
       const closeTime = new Date("2022-03-15T23:59:59");
 
+      now.setHours(now.getHours() + 9);
+
       if (openTime > now || closeTime < now) {
         SetisOpen(false);
       }

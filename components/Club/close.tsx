@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useHealthLiveQuery } from "../../generated";
 import styled from "styled-components";
 
 const Close = () => {
   const [time, SetTime] = useState("");
   const [message, SetMessage] = useState("");
+  const {
+    data: timedata,
+    loading: timeloading,
+    error: timeerror,
+  } = useHealthLiveQuery({
+    variables: {},
+  });
 
   useEffect(() => {
-    fetch("http://worldtimeapi.org/api/timezone/Asia/Seoul")
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (time) {
-        SetTime(JSON.stringify(time.datetime));
-      });
+    SetTime(timedata?.healthLive.healthLive);
 
     if (time !== "") {
-      const now = new Date(time.split(".")[0].substr(1));
+      const now = new Date(timedata?.healthLive.split(".")[0]);
       const openTime = new Date("2022-03-09T00:00:00");
       const closeTime = new Date("2022-03-15T23:59:59");
+
+      now.setHours(now.getHours() + 9);
 
       if (openTime > now) {
         SetMessage("지원 시작 전입니다.");
