@@ -12,7 +12,7 @@ import { Cookies } from "react-cookie";
 
 const withApollo = nextWithApollo(
   ({ initialState, headers }) => {
-    const httpLink = new HttpLink({ uri: "https://devtest.pukuba.dev/api" });
+    const httpLink = new HttpLink({ uri: "https://club.pukuba.dev/api" });
 
     const authLink = new ApolloLink((operation, forward) => {
       const cookies = new Cookies();

@@ -23,7 +23,25 @@ export const Questionsitem = ({ question, value }: any) => {
   return (
     <Base>
       <label>
-        <QuestionTitle>{question.message}</QuestionTitle>
+        <QuestionTitle>
+          {Number(
+            question.message
+              .substring(
+                question.message.length -
+                  question.message.split("").reverse().join("").indexOf("("),
+                question.message.length -
+                  question.message.split("").reverse().join("").indexOf(")") -
+                  1
+              )
+              .replace(/[^0-9]/g, "")
+          ) >= 3000
+            ? question.message.substring(
+                0,
+                question.message.length -
+                  question.message.split("").reverse().join("").indexOf("(")
+              )
+            : question.message}
+        </QuestionTitle>
         <div
           style={{
             minHeight: parentHeight,
@@ -43,7 +61,7 @@ export const Questionsitem = ({ question, value }: any) => {
           />
         </div>
       </label>
-      {textlength == 0 ? (
+      {textlength == 0 || question.length >= 3000 ? (
         <div></div>
       ) : (
         <QuestionLength>
