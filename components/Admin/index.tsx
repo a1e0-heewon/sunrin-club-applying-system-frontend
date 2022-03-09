@@ -64,17 +64,15 @@ const Index = ({ club, dataClub, readMoreClub }: any) => {
   };
 
   useEffect(() => {
-    if (check) {
-      sendMessageMutation({
-        variables: {
-          input: {
-            message: message,
-            phoneNumberList: checkedItems,
-          },
+    sendMessageMutation({
+      variables: {
+        input: {
+          message: message,
+          phoneNumberList: checkedItems,
         },
-      });
-      window.location.replace(window.location.href);
-    }
+      },
+    });
+    window.location.replace(window.location.href);
   }, [check]);
 
   return (
@@ -122,7 +120,7 @@ const ContentItem = ({ index, data, formdata, checkControl }: any) => {
       <ContentHeader>
         <input
           type="checkbox"
-          id={index + " " + data.node.phoneNumber}
+          id={data.node.phoneNumber}
           checked={checked}
           onChange={(e) => {
             setChecked(!checked);
