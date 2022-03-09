@@ -1,3 +1,4 @@
+import { noAuto } from "@fortawesome/fontawesome-svg-core";
 import React, { useState, useEffect, useRef, CSSProperties } from "react";
 import styled from "styled-components";
 
@@ -125,7 +126,6 @@ export const PortfolioURL = ({ value }: any) => {
         type="url"
         value={text}
         onChange={onChangeHandler}
-        required
       />
     </Base>
   );

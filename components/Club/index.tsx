@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useCreateAnswerMutation } from "../../generated";
 import { Questionsitem, Infoitem, OtherURL, PortfolioURL } from "./question";
+import SubmitModal from "./SubmitModal";
 import Footer from "./Nav/Footer";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Main = ({ club, datas }: any) => {
+  const [modal, setModal] = useState(false);
   const [check, setCheck] = useState(false);
   const [info, setInfo] = useState([]);
   const [question, setQuestion] = useState([]);
-  const [portfolioURL, setPortfolioURL] = useState("");
+  const [portfolioURL, setPortfolioURL] = useState(null);
   const [otherURL, setOtherURL] = useState([]);
+  const router = useRouter();
 
   const [createAnswerMutation, { data, loading, error }] =
     useCreateAnswerMutation();
@@ -26,13 +29,29 @@ const Main = ({ club, datas }: any) => {
       } else if (event.target[i].tagName == "TEXTAREA") {
         setQuestion((question: any) => question.concat(event.target[i].value));
       } else if (event.target[i].id === "PortfolioURL") {
-        setPortfolioURL(event.target[i].value);
+        if (event.target[i].value == "") setPortfolioURL(null);
+        else setPortfolioURL(event.target[i].value);
       } else if (event.target[i].id === "OtherURL") {
         setOtherURL((otherURL: any) => otherURL.concat(event.target[i].value));
       }
     }
+    openModal();
+  };
 
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    setModal(true);
+  };
+
+  const closeModal = () => {
+    document.body.style.overflow = "scroll";
+    setModal(false);
+    setCheck(false);
+  };
+
+  const submitCheck = () => {
     setCheck(true);
+    setModal(false);
   };
 
   useEffect(() => {
@@ -50,8 +69,8 @@ const Main = ({ club, datas }: any) => {
           },
         },
       });
+      router.push("../");
     }
-    setCheck(false);
   }, [check]);
 
   return (
@@ -91,6 +110,7 @@ const Main = ({ club, datas }: any) => {
         </FormBase>
         <Footer />
       </Form>
+      {modal && <SubmitModal submitCheck={submitCheck} onClose={closeModal} />}
     </Base>
   );
 };
