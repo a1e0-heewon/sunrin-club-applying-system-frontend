@@ -69,9 +69,19 @@ const Main = ({ club, datas }: any) => {
           },
         },
       });
-      router.push("../");
     }
   }, [check]);
+
+  useEffect(() => {
+    if (check) {
+      if (error) {
+        alert("제출 실패하였습니다. 다시 제출해주세요.");
+        window.location.replace(window.location.href);
+      } else if (data) {
+        router.push("../");
+      }
+    }
+  }, [error, data]);
 
   return (
     <Base>
