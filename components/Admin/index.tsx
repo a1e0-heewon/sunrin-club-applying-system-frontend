@@ -64,15 +64,17 @@ const Index = ({ club, dataClub, readMoreClub }: any) => {
   };
 
   useEffect(() => {
-    sendMessageMutation({
-      variables: {
-        input: {
-          message: message,
-          phoneNumberList: checkedItems,
+    if(check) {
+      sendMessageMutation({
+        variables: {
+          input: {
+            message: message,
+            phoneNumberList: checkedItems,
+          },
         },
-      },
-    });
-    window.location.replace(window.location.href);
+      });
+      window.location.replace(window.location.href);
+    }
   }, [check]);
 
   return (
