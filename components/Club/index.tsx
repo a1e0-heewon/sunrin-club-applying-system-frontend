@@ -5,6 +5,8 @@ import { Questionsitem, Infoitem, OtherURL, PortfolioURL } from "./question";
 import SubmitModal from "./SubmitModal";
 import Footer from "./Nav/Footer";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const Main = ({ club, datas }: any) => {
   const [modal, setModal] = useState(false);
@@ -14,6 +16,7 @@ const Main = ({ club, datas }: any) => {
   const [portfolioURL, setPortfolioURL] = useState(null);
   const [otherURL, setOtherURL] = useState([]);
   const router = useRouter();
+  const Swals = withReactContent(Swal);
 
   const [createAnswerMutation, { data, loading, error }] =
     useCreateAnswerMutation();
@@ -75,10 +78,26 @@ const Main = ({ club, datas }: any) => {
   useEffect(() => {
     if (check) {
       if (error) {
-        alert("제출 실패하였습니다. 다시 제출해주세요.");
-        window.location.replace(window.location.href);
+        Swal.fire({
+          icon: "error",
+          title: "제출에 실패하였습니다.",
+          text: "",
+          confirmButtonText: "확인",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCheck(false);
+            console.log(error);
+          }
+        });
       } else if (data) {
-        router.push("../");
+        Swal.fire({
+          icon: "success",
+          title: "제출되었습니다.",
+          confirmButtonText: "확인",
+        }).then((result) => {
+          if (result.isConfirmed) router.push("../");
+          setCheck(false);
+        });
       }
     }
   }, [error, data]);
