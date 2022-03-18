@@ -33,8 +33,8 @@ const Club = ({ query }: any) => {
 
     if (time !== "") {
       const now = new Date(timedata?.healthLive.split(".")[0]);
-      const openTime = new Date("2022-03-09T00:00:00");
-      const closeTime = new Date("2022-03-15T23:59:59");
+      const openTime = new Date("2022-03-18T00:00:00");
+      const closeTime = new Date("2022-03-18T23:59:59");
 
       now.setHours(now.getHours() + 9);
 
