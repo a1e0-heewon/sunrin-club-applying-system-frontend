@@ -33,8 +33,8 @@ const Club = ({ query }: any) => {
 
     if (time !== "") {
       const now = new Date(timedata?.healthLive.split(".")[0]);
-      const openTime = new Date("2022-03-18T00:00:00");
-      const closeTime = new Date("2022-03-18T23:59:59");
+      const openTime = new Date("2022-03-22T00:00:00");
+      const closeTime = new Date("2022-03-25T23:59:59");
 
       now.setHours(now.getHours() + 9);
 
@@ -44,7 +44,7 @@ const Club = ({ query }: any) => {
     }
   });
 
-  if (!isOpen) return <Close />;
+  if (!isOpen || id != "TEAMLOG") return <Close />;
   if (loading || timeloading) return <Loading />;
   if (error || data?.getFormByClub.__typename == "InvalidFormError")
     return <Error />;
